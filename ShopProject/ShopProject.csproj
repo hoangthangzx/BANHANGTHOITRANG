@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,6 +23,8 @@
     <TargetFrameworkProfile />
     <Use64BitIISExpress />
     <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -42,12 +45,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -359,7 +360,6 @@
     <Content Include="Areas\Administrator\Views\Product\Index.cshtml" />
     <Content Include="Areas\Administrator\Views\Product\Edit.cshtml" />
     <Content Include="Areas\Administrator\Views\Product\Details.cshtml" />
-    <Content Include="Areas\Administrator\Views\Account\Login.cshtml" />
     <Content Include="fonts\fontawesome-webfont.eot" />
     <Content Include="fonts\fontawesome-webfont.ttf" />
     <Content Include="fonts\fontawesome-webfont.woff" />
@@ -438,6 +438,9 @@
     <Content Include="Areas\Shopper\Views\Home\Index.cshtml" />
     <Content Include="Areas\Shopper\Views\ThanhToan\Index.cshtml" />
     <Content Include="Areas\Shopper\Views\ThanhToan\HoaDon.cshtml" />
+    <Content Include="Areas\Shopper\Views\Home\View1.cshtml" />
+    <Content Include="Areas\Administrator\Views\Customer\Login.cshtml" />
+    <Content Include="Areas\Shopper\Views\Oder\Index.cshtml" />
     <None Include="Properties\PublishProfiles\ShopperMVC.pubxml" />
     <None Include="Scripts\jquery-1.9.0.intellisense.js" />
     <Content Include="Image\arr.png" />
@@ -495,7 +498,6 @@
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Administrator\AdministratorAreaRegistration.cs" />
-    <Compile Include="Areas\Administrator\Controllers\AccountController.cs" />
     <Compile Include="Areas\Administrator\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Administrator\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Administrator\Controllers\ProducerController.cs" />
@@ -506,6 +508,7 @@
     <Compile Include="Areas\Administrator\Models\Category.cs" />
     <Compile Include="Areas\Administrator\Models\Comment.cs" />
     <Compile Include="Areas\Administrator\Models\Customer.cs" />
+    <Compile Include="Areas\Administrator\Models\LoginViewModel.cs" />
     <Compile Include="Areas\Administrator\Models\Order.cs" />
     <Compile Include="Areas\Administrator\Models\OrderDetail.cs" />
     <Compile Include="Areas\Administrator\Models\Producer.cs" />
@@ -514,18 +517,23 @@
     <Compile Include="Areas\Administrator\Models\Rate.cs" />
     <Compile Include="Areas\Shopper\Controllers\GioHangController.cs" />
     <Compile Include="Areas\Shopper\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Shopper\Controllers\OderController.cs" />
     <Compile Include="Areas\Shopper\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Shopper\Controllers\ThanhToanController.cs" />
-    <Compile Include="Areas\Shopper\Models\CartItem.cs" />
-    <Compile Include="Areas\Shopper\Models\Category.cs" />
-    <Compile Include="Areas\Shopper\Models\Comment.cs" />
-    <Compile Include="Areas\Shopper\Models\Customer.cs" />
-    <Compile Include="Areas\Shopper\Models\Order.cs" />
-    <Compile Include="Areas\Shopper\Models\OrderDetail.cs" />
-    <Compile Include="Areas\Shopper\Models\Producer.cs" />
-    <Compile Include="Areas\Shopper\Models\Product.cs" />
-    <Compile Include="Areas\Shopper\Models\ProductType.cs" />
-    <Compile Include="Areas\Shopper\Models\Rate.cs" />
+    <Compile Include="Areas\Shopper\Models\Categories.cs" />
+    <Compile Include="Areas\Shopper\Models\Comments.cs" />
+    <Compile Include="Areas\Shopper\Models\Customers.cs" />
+    <Compile Include="Areas\Shopper\Models\OrderDetails.cs" />
+    <Compile Include="Areas\Shopper\Models\Orders.cs" />
+    <Compile Include="Areas\Shopper\Models\OrderStatuses.cs" />
+    <Compile Include="Areas\Shopper\Models\Payments.cs" />
+    <Compile Include="Areas\Shopper\Models\Producers.cs" />
+    <Compile Include="Areas\Shopper\Models\Products.cs" />
+    <Compile Include="Areas\Shopper\Models\ProductTypes.cs" />
+    <Compile Include="Areas\Shopper\Models\Rates.cs" />
+    <Compile Include="Areas\Shopper\Models\ShippingDetails.cs" />
+    <Compile Include="Areas\Shopper\Models\ShoppingCartItems.cs" />
+    <Compile Include="Areas\Shopper\Models\sysdiagrams.cs" />
     <Compile Include="Areas\Shopper\Models\UserContext.cs" />
     <Compile Include="Areas\Shopper\ShopperAreaRegistration.cs" />
     <Compile Include="Areas\Shopper\Controllers\ErrorsController.cs" />
@@ -636,6 +644,14 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

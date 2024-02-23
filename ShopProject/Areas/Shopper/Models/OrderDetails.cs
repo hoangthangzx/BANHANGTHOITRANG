@@ -6,7 +6,7 @@ namespace ShopProject.Areas.Shopper.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class OrderDetail
+    public partial class OrderDetails
     {
         [Key]
         [Column(Order = 0)]
@@ -23,8 +23,8 @@ namespace ShopProject.Areas.Shopper.Models
         [StringLength(50)]
         public string ordtsThanhTien { get; set; }
 
-        public virtual Order Order { get; set; }
+        public virtual Orders Orders { get; set; }
 
-        public virtual Product Product { get; set; }
+        public virtual Products Products { get; set; }
     }
 }

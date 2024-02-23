@@ -10,15 +10,22 @@ namespace ShopProject.Areas.Administrator.Controllers
     public class ProducerController : Controller
     {
         Models.AdminContext dbPdc = new Models.AdminContext();
-        //
-        // GET: /Administrator/Producer/
+
         [HandleError]
         public ActionResult Index(string error)
         {
-            if (Session["accname"] == null)
+            // Check if user's role is not equal to 0 (admin)
+            if (Session["role"] == null || (int)Session["role"] != 0)
             {
-                Session["accname"] = null;
-                return RedirectToAction("Login", "Account");
+                // Redirect to a different page or display an error message
+                return RedirectToAction("AccessDenied", "Error");
+            }
+
+            // Check if user is logged in
+            if (Session["cusFullName"] == null)
+            {
+                Session["cusFullName"] = null;
+                return RedirectToAction("Login", "Customer");
             }
             else
             {
@@ -31,10 +38,18 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HttpGet]
         public ActionResult Create()
         {
-            if (Session["accname"] == null)
+            // Check if user's role is not equal to 0 (admin)
+            if (Session["role"] == null || (int)Session["role"] != 0)
             {
-                Session["accname"] = null;
-                return RedirectToAction("Login", "Account");
+                // Redirect to a different page or display an error message
+                return RedirectToAction("AccessDenied", "Error");
+            }
+
+            // Check if user is logged in
+            if (Session["cusFullName"] == null)
+            {
+                Session["cusFullName"] = null;
+                return RedirectToAction("Login", "Customer");
             }
             else
             {
@@ -46,10 +61,18 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HttpPost]
         public ActionResult Create(Models.Producer createPdc, HttpPostedFileBase file)
         {
-            if (Session["accname"] == null)
+            // Check if user's role is not equal to 0 (admin)
+            if (Session["role"] == null || (int)Session["role"] != 0)
             {
-                Session["accname"] = null;
-                return RedirectToAction("Login", "Account");
+                // Redirect to a different page or display an error message
+                return RedirectToAction("AccessDenied", "Error");
+            }
+
+            // Check if user is logged in
+            if (Session["cusFullName"] == null)
+            {
+                Session["cusFullName"] = null;
+                return RedirectToAction("Login", "Customer");
             }
             else
             {
@@ -68,31 +91,27 @@ namespace ShopProject.Areas.Administrator.Controllers
                             ViewBag.CreatePdcError = "Không thể chọn ảnh.";
                         }
                     }
-                    var pdc = dbPdc.Producers.SingleOrDefault(c => c.pdcName.Equals(createPdc.pdcName));
-                    try
+                }
+                var pdc = dbPdc.Producers.SingleOrDefault(c => c.pdcName.Equals(createPdc.pdcName));
+                try
+                {
+                    if (ModelState.IsValid)
                     {
-                        if (ModelState.IsValid)
+                        if (pdc != null)
                         {
-                            if (pdc != null)
-                            {
-                                ViewBag.CreatePdcError = "Hãng sản xuất đã tồn tại.";
-                            }
-                            else
-                            {
-                                dbPdc.Producers.Add(createPdc);
-                                dbPdc.SaveChanges();
-                                ViewBag.CreatePdcError = "Thêm hãng sản xuất thành công.";
-                            }
+                            ViewBag.CreatePdcError = "Hãng sản xuất đã tồn tại.";
+                        }
+                        else
+                        {
+                            dbPdc.Producers.Add(createPdc);
+                            dbPdc.SaveChanges();
+                            ViewBag.CreatePdcError = "Thêm hãng sản xuất thành công.";
                         }
                     }
-                    catch (Exception)
-                    {
-                        ViewBag.CreatePdcError = "Không thể thêm hãng sản xuất.";
-                    }
                 }
-                else
+                catch (Exception)
                 {
-                    ViewBag.HinhAnh = "Vui lòng chọn hình ảnh.";
+                    ViewBag.CreatePdcError = "Không thể thêm hãng sản xuất.";
                 }
                 return View();
             }
@@ -102,10 +121,18 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HttpGet]
         public ActionResult Edit(int id)
         {
-            if (Session["accname"] == null)
+            // Check if user's role is not equal to 0 (admin)
+            if (Session["role"] == null || (int)Session["role"] != 0)
             {
-                Session["accname"] = null;
-                return RedirectToAction("Login", "Account");
+                // Redirect to a different page or display an error message
+                return RedirectToAction("AccessDenied", "Error");
+            }
+
+            // Check if user is logged in
+            if (Session["cusFullName"] == null)
+            {
+                Session["cusFullName"] = null;
+                return RedirectToAction("Login", "Customer");
             }
             else
             {
@@ -117,10 +144,18 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HttpPost]
         public ActionResult Edit(Models.Producer editPdc, HttpPostedFileBase file)
         {
-            if (Session["accname"] == null)
+            // Check if user's role is not equal to 0 (admin)
+            if (Session["role"] == null || (int)Session["role"] != 0)
             {
-                Session["accname"] = null;
-                return RedirectToAction("Login", "Account");
+                // Redirect to a different page or display an error message
+                return RedirectToAction("AccessDenied", "Error");
+            }
+
+            // Check if user is logged in
+            if (Session["cusFullName"] == null)
+            {
+                Session["cusFullName"] = null;
+                return RedirectToAction("Login", "Customer");
             }
             else
             {
@@ -158,12 +193,21 @@ namespace ShopProject.Areas.Administrator.Controllers
         }
 
         [HandleError]
+        [HttpPost]
         public ActionResult Delete(int id)
         {
-            if (Session["accname"] == null)
+            // Check if user's role is not equal to 0 (admin)
+            if (Session["role"] == null || (int)Session["role"] != 0)
             {
-                Session["accname"] = null;
-                return RedirectToAction("Login", "Account");
+                // Redirect to a different page or display an error message
+                return RedirectToAction("AccessDenied", "Error");
+            }
+
+            // Check if user is logged in
+            if (Session["cusFullName"] == null)
+            {
+                Session["cusFullName"] = null;
+                return RedirectToAction("Login", "Customer");
             }
             else
             {

@@ -15,9 +15,9 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HandleError]
         public ActionResult Index(string error)
         {
-            if (Session["accname"] == null)
+            if (Session["role"] == null)
             {
-                Session["accname"] = null;
+                Session["role"] = null;
                 return RedirectToAction("Login", "Account");
             }
             else
@@ -31,9 +31,9 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HandleError]
         public ActionResult Create()
         {
-            if (Session["accname"] == null)
+            if (Session["role"] == null)
             {
-                Session["accname"] = null;
+                Session["role"] = null;
                 return RedirectToAction("Login", "Account");
             }
             else
@@ -46,9 +46,9 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HttpPost]
         public ActionResult Create(Models.Category createCate, HttpPostedFileBase file)
         {
-            if (Session["accname"] == null)
+            if (Session["role"] == null)
             {
-                Session["accname"] = null;
+                Session["role"] = null;
                 return RedirectToAction("Login", "Account");
             }
             else
@@ -97,9 +97,9 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HandleError]
         public ActionResult Edit(int id)
         {
-            if (Session["accname"] == null)
+            if (Session["role"] == null)
             {
-                Session["accname"] = null;
+                Session["role"] = null;
                 return RedirectToAction("Login", "Account");
             }
             else
@@ -113,9 +113,9 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HttpPost]
         public ActionResult Edit(Models.Category editCate, HttpPostedFileBase file)
         {
-            if (Session["accname"] == null)
+            if (Session["role"] == null)
             {
-                Session["accname"] = null;
+                Session["role"] = null;
                 return RedirectToAction("Login", "Account");
             }
             else
@@ -163,9 +163,9 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HandleError]
         public ActionResult Delete(int id)
         {
-            if (Session["accname"] == null)
+            if (Session["role"] == null)
             {
-                Session["accname"] = null;
+                Session["role"] = null;
                 return RedirectToAction("Login", "Account");
             }
             else

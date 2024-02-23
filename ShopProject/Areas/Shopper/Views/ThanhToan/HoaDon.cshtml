@@ -3,9 +3,12 @@
     Layout = "~/Areas/Shopper/Views/Shared/_LayoutShop.cshtml";
 }
 @{
-    ShopProject.Areas.Shopper.Models.UserContext db=new ShopProject.Areas.Shopper.Models.UserContext();
-    var cus = db.Customers.Find(Session["Phone"]);
+    ShopProject.Areas.Shopper.Models.UserContext db = new ShopProject.Areas.Shopper.Models.UserContext();
+    var cus = db.Orders.Find(Session["MHD"]);
+    var cu = db.Customers.Find(Session["cusPhone"]);
 }
+}
+
 <div class="container">
     <div class="spec ">
         <h3><a href="#" style="text-decoration:none;">Hoá đơn @Session["MHD"]</a></h3>
@@ -22,19 +25,30 @@
         <div class="col-lg-6">
             <div class="panel panel-success">
                 <div class="panel-heading">
-                    Họ và tên khách: @cus.cusFullName
+                    Họ và tên khách: @cu.cusFullName
                 </div>
                 <div class="panel-body">
-                    <p>
-                        <br />
-                        Số điện thoại: @Session["Phone"]<br />
-                        Email: @cus.cusEmail<br />
-                        Địa chỉ: @cus.cusAddress<br />
-                        Ghi chú: @db.Orders.Find(Session["MHD"]).orderMessage
-                    </p>
+              
+                    @if (cus != null)
+                    {
+                        <p>
+                            <br />
+                            Họ và tên người nhận: @cus.cusFullNamegiao<br />
+                            Số điện thoại: @Session["Phonegiao"]<br />
+                            Ghi chú: @db.Orders.Find(Session["MHD"]).orderMessage<br />
+                            Email: @cus.cusEmailgiao<br />
+                            Địa chỉ: @cus.cusAddressgiao<br />
+
+                        </p>
+                    }
+                    else
+                    {
+                        <p>Không có thông tin khách hàng</p>
+                    }
                 </div>
             </div>
         </div>
+
         <div class="col-lg-6">
             <div class="panel panel-danger">
                 <div class="panel-heading">
@@ -44,8 +58,8 @@
                     <p>
                         <br />
                         Số điện thoại: 01212692802<br />
-                        Email: tungtim96@gmail.com<br />
-                        Địa chỉ: Dĩ an, Bình dương
+                        Email: THANG@gmail.com<br />
+                        Địa chỉ: Nga Sơn, Thanh Hóa<br /><br /><br />
                     </p>
                 </div>
             </div>
@@ -75,13 +89,13 @@
                         @foreach (var item in db.OrderDetails.SqlQuery("Select * from OrderDetails Where orderID='" + Session["MHD"] + "'"))
                         {
                             i++;
-                        <tr>
-                            <td>@i</td>
-                            <td><img src="@item.Product.proPhoto" width="50" height="50"></td>
-                            <td>@item.Product.proName</td>
-                            <td>@item.ordtsQuantity</td>
-                            <td>@Int32.Parse(item.ordtsThanhTien).ToString("#,##0") VNĐ</td>
-                        </tr>
+                            <tr>
+                                <td>@i</td>
+                                <td><img src="@item.Products.proPhoto" width="50" height="50"></td>
+                                <td>@item.Products.proName</td>
+                                <td>@item.ordtsQuantity</td>
+                                <td>@Int32.Parse(item.ordtsThanhTien).ToString("#,##0") VNĐ</td>
+                            </tr>
                             tong += Int32.Parse(item.ordtsThanhTien);
                         }
                     </tbody>

@@ -1,4 +1,5 @@
-﻿using ShopProject.Areas.Shopper.Models;
+﻿
+using ShopProject.Areas.Shopper.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,71 +14,83 @@ namespace ShopProject.Areas.Shopper.Controllers
         // GET: Shopper/ThanhToan
         public ActionResult Index()
         {
-            List<CartItem> giohang = Session["giohang"] as List<CartItem>;
-            return View(giohang);
-        }
+            // Khởi tạo đối tượng DbContext
+            ShopProject.Areas.Shopper.Models.UserContext db = new ShopProject.Areas.Shopper.Models.UserContext();
 
+            // Lấy giỏ hàng từ cơ sở dữ liệu
+            List<ShopProject.Areas.Shopper.Models.ShoppingCartItems> gio = new List<ShopProject.Areas.Shopper.Models.ShoppingCartItems>();
+
+            // Kiểm tra xem có cusPhone trong session không
+            if (Session["cusPhone"] != null)
+            {
+                string cusPhone = Session["cusPhone"].ToString();
+                // Lấy danh sách ShoppingCartItems dựa vào cusPhone
+                gio = db.ShoppingCartItems.Where(item => item.cusPhone == cusPhone).ToList();
+            }
+
+            return View(gio);
+        }
         [HttpPost]
         public ActionResult StepEnd()
         {
-            //Nhận reqest từ trang index
+            // Nhận thông tin từ form
             string phone = Request.Form["phone"];
             string fullname = Request.Form["fullname"];
             string email = Request.Form["email"];
             string address = Request.Form["address"];
             string note = Request.Form["note"];
-            //kiểm tra xem có customer chưa và cập nhật lại
-            Customer newCus = new Customer();
-            var cus = db.Customers.FirstOrDefault(p => p.cusPhone.Equals(phone));
-            if (cus != null)
-            {
-                //nếu có số điện thoại trong db rồi
-                //cập nhật thông tin và lưu
-                cus.cusFullName = fullname;
-                cus.cusEmail = email;
-                cus.cusAddress = address;
-                db.Entry(cus).State = System.Data.Entity.EntityState.Modified;
-                db.SaveChanges();
-            }
-            else
-            {
-                //nếu chưa có sđt trong db
-                //thêm thông tin và lưu
-                newCus.cusPhone = phone;
-                newCus.cusFullName = fullname;
-                newCus.cusEmail = email;
-                newCus.cusAddress = address;
-                db.Customers.Add(newCus);
-                db.SaveChanges();
-            }
-            //Thêm thông tin vào order và orderdetail
-            List<CartItem> giohang = Session["giohang"] as List<CartItem>;
-            //thêm order mới
-            Order newOrder = new Order();
+
+            // Tạo đơn hàng mới
+            Orders newOrder = new Orders();
             string newIDOrder = (Int32.Parse(db.Orders.OrderByDescending(p => p.orderDateTime).FirstOrDefault().orderID.Replace("HD", "")) + 1).ToString();
             newOrder.orderID = "HD" + newIDOrder;
-            newOrder.cusPhone = phone;
+            newOrder.cusPhonegiao = phone;
+            newOrder.cusPhone = Session["cusPhone"].ToString();
+            newOrder.cusFullNamegiao = fullname;
+            newOrder.cusEmailgiao = email;
+            newOrder.cusAddressgiao = address;
             newOrder.orderMessage = note;
             newOrder.orderDateTime = DateTime.Now.ToString();
             newOrder.orderStatus = "0";
+
+            // Thêm đơn hàng vào cơ sở dữ liệu
             db.Orders.Add(newOrder);
             db.SaveChanges();
-            //thêm details
-            for (int i = 0; i < giohang.Count; i++)
+
+            // Lưu trữ thông tin giỏ hàng từ session
+            List<ShoppingCartItems> gioHang = GetCartItemsFromDatabase();
+
+            // Thêm chi tiết đơn hàng vào cơ sở dữ liệu
+            foreach (var item in gioHang)
             {
-                OrderDetail newOrdts = new OrderDetail();
+                OrderDetails newOrdts = new OrderDetails();
                 newOrdts.orderID = newOrder.orderID;
-                newOrdts.proID = giohang.ElementAtOrDefault(i).SanPhamID;
-                newOrdts.ordtsQuantity = giohang.ElementAtOrDefault(i).SoLuong;
-                newOrdts.ordtsThanhTien = giohang.ElementAtOrDefault(i).ThanhTien.ToString();
+                newOrdts.proID = item.proID;
+                newOrdts.ordtsQuantity = item.quantity;
+                newOrdts.ordtsThanhTien = (item.quantity * decimal.Parse(item.price)).ToString();
                 db.OrderDetails.Add(newOrdts);
-                db.SaveChanges();
             }
-            Session["MHD"] = "HD"+newIDOrder;
-            Session["Phone"] = phone;
-            //xoá sạch giỏ hàng
-            giohang.Clear();
+
+            // Lưu thay đổi vào cơ sở dữ liệu
+            db.SaveChanges();
+
+            // Xóa các mục giỏ hàng khỏi cơ sở dữ liệu
+            db.ShoppingCartItems.RemoveRange(gioHang);
+            db.SaveChanges();
+
+            // Lưu thông tin đơn hàng vào session
+            Session["MHD"] = "HD" + newIDOrder;
+            Session["Phonegiao"] = phone;
+
+            // Chuyển hướng đến trang xác nhận
             return RedirectToAction("HoaDon", "ThanhToan");
+        }
+
+        // Phương thức lấy thông tin giỏ hàng từ cơ sở dữ liệu
+        private List<ShoppingCartItems> GetCartItemsFromDatabase()
+        {
+            // Lấy danh sách các mục giỏ hàng từ cơ sở dữ liệu
+            return db.ShoppingCartItems.ToList();
         }
 
         public ActionResult HoaDon()

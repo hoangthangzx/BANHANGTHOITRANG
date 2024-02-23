@@ -1,4 +1,4 @@
-﻿@model ShopProject.Areas.Shopper.Models.Product
+﻿@model ShopProject.Areas.Shopper.Models.Products
 @{
     ViewBag.Title = "Chi tiết";
     Layout = "~/Areas/Shopper/Views/Shared/_LayoutShop.cshtml";
@@ -71,7 +71,7 @@
         <div class="clearfix"> </div>
         <!--TIêu đề-->
         <div class="spec " style="margin-top:30px;">
-            <h3><a href="@Url.Action("ProductsByPdc", "Products", new { id= Model.pdcID, page=1 })" style="text-decoration:none;">Thời trang cùng hãng @Model.Producer.pdcName</a></h3>
+            <h3><a href="@Url.Action("ProductsByPdc", "Products", new { id= Model.pdcID, page=1 })" style="text-decoration:none;">Thời trang cùng hãng @Model.Producers.pdcName</a></h3>
             <div class="ser-t">
                 <b></b>
                 <span><i></i></span>
@@ -141,7 +141,7 @@
                                                 }
                                             </div>
                                             <div>
-                                                <a href="#"><img src="@item.Producer.pdcPhoto" width="20" height="20" /> @item.Producer.pdcName</a>
+                                                <a href="#"><img src="@item.Producers.pdcPhoto" width="20" height="20" /> @item.Producers.pdcName</a>
                                             </div>
                                             <div class="clearfix"></div>
                                         </div>

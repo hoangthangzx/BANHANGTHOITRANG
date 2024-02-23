@@ -13,15 +13,20 @@ namespace ShopProject.Areas.Administrator.Controllers
         [HandleError]
         public ActionResult Index()
         {
-            if (Session["accname"]==null)
-            {
-                Session["accname"] = null;
-                return RedirectToAction("Login", "Account");
-            }
-            else
-            {
-                return View();
-            }
+          
+                    return View();
+              
         }
-	}
+        // Hành động để xử lý đăng xuất
+        [HandleError]
+        public ActionResult Logout()
+        {
+            // Xóa tất cả các biến phiên (session)
+            Session.Clear();
+
+            // Chuyển hướng người dùng đến trang đăng nhập
+            return RedirectToAction("Login", "Customer", new { area = "Administrator" });
+        }
+    }
+
 }

@@ -99,9 +99,12 @@
                     </a>
                     <ul class="dropdown-menu dropdown-user">
                         <li>
-                            <a href="@Url.Action("Logout", "Account")"><i class="fa fa-sign-out fa-fw"></i> Đăng xuất</a>
+                            <a href="@Url.Action("Logout", "Home", new { area = "Administrator" })">
+                                <i class="fa fa-sign-out fa-fw"></i> Đăng xuất
+                            </a>
                         </li>
                     </ul>
+
                     <!-- /.dropdown-user -->
                 </li>
                 <!-- /.dropdown -->

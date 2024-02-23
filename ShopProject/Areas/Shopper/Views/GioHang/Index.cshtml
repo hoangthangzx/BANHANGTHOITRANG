@@ -1,12 +1,14 @@
-﻿@model List<ShopProject.Areas.Shopper.Models.CartItem>
+﻿@model List<ShopProject.Areas.Shopper.Models.ShoppingCartItems>
 @{
     ViewBag.Title = "Giỏ hàng của bạn";
     Layout = "~/Areas/Shopper/Views/Shared/_LayoutShop.cshtml";
 }
+<h3><a href="#" style="text-decoration:none;">Hoá đơn @Session["MHD"]</a></h3>
+<h3><a href="#" style="text-decoration:none;">Hoá đơn  @Session["Phonegiao"]</a></h3>
 <div class="container">
     @if (Model == null || Model.Count == 0)
     {
-        <div class="spec ">
+        <div class="spec">
             <h3>Giỏ hàng</h3>
             <div class="ser-t">
                 <b></b>
@@ -20,7 +22,7 @@
     }
     else
     {
-        <div class="spec ">
+        <div class="spec">
             <h3>Giỏ hàng</h3>
             <div class="ser-t">
                 <b></b>
@@ -41,35 +43,62 @@
                             <th>Đơn giá</th>
                             <th>Thành tiền</th>
                             <th></th>
+                            <th></th>
                         </tr>
                         @foreach (var item in Model)
                         {
                             <tr>
-                                <td class="text-center"><img src="@item.Hinh" width="70" height="60" /> </td>
-                                <td><a target="_blank" href="@Url.Action("ProductDetail", "Products", new { id = item.SanPhamID })" style="font-size:medium;"> @item.TenSanPham </a> </td>
+                                <td class="text-center">
+                                    <img src="@item.Products.proPhoto" width="70" height="60" /> <!-- Lấy hình từ Products -->
+                                </td>
                                 <td>
+                                    <a target="_blank" href="@Url.Action("ProductDetail", "Products", new { id = item.proID })" style="font-size:medium;">
+                                        @item.Products.proName <!-- Lấy tên sản phẩm từ Products -->
+                                    </a>
+                                </td>
+                                <td>
+                                    <!-- Số lượng từ ShoppingCartItems -->
                                     <form id="formSoluong_@i" action="@Url.Action("SuaSoLuong","GioHang")" method="get">
-                                        <input type="hidden" name="SanPhamID" value="@item.SanPhamID" />
-                                        <input class="col-lg-4" style="height:30px;" type="number" min="1" step="1" name="soluongmoi" value="@item.SoLuong" onchange="$('#formSoluong_@i').submit();" />
+                                        <input type="hidden" name="SanPhamID" value="@item.proID" />
+                                        <input class="col-lg-4" style="height:30px;" type="number" min="1" step="1" name="soluongmoi" value="@item.quantity" onchange="$('#formSoluong_@i').submit();" />
                                     </form>
                                 </td>
-                                <td> @Int32.Parse(item.DonGia).ToString("#,##0") VNĐ </td>
-                                <td> @item.ThanhTien.ToString("#,##0") VNĐ </td>
-
-                                <td> <a href="@Url.Action("XoaKhoiGio",new { SanPhamID = item.SanPhamID})" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');" class="btn btn-danger btn-sm">Xóa</a> </td>
+                                <td>
+                                    @item.price VNĐ <!-- Đơn giá từ ShoppingCartItems -->
+                                </td>
+                                <td>
+                                    <!-- Thành tiền từ ShoppingCartItems -->
+                                    @(item.quantity * decimal.Parse(item.price)) VNĐ
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("XoaKhoiGio",new { SanPhamID = item.proID})" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này?');" class="btn btn-danger btn-sm">Xóa</a>
+                                </td>
                             </tr>
-                            i++;
-                            total += @item.ThanhTien;
                         }
                         <tr>
                             <td></td>
                             <td class="text-right"></td>
                             <td></td>
                             <td class="text-right">Tổng thành tiền:</td>
-                            <td style="font-size:large;">@total.ToString("#,##0") VNĐ </td>
+                            <td style="font-size:large;">
+                                @if (Model != null && Model.Any())
+                                {
+                                    // Tính tổng thành tiền của từng sản phẩm trong giỏ hàng
+                                    decimal totalAmount = Model.Sum(it => it.quantity * decimal.Parse(it.price));
+
+                                    // Hiển thị tổng thành tiền với định dạng số và đơn vị tiền tệ
+                                    @totalAmount.ToString("#,##0")
+                                }
+                                else
+                                {
+                                    <span>0 VNĐ</span>
+                                }
+                            </td>
                             <td><a href="@Url.Action("Index", "ThanhToan")" role="button" class="btn btn-success">Thanh toán</a></td>
                         </tr>
+
                     </table>
+
                 </div>
 
             </div>

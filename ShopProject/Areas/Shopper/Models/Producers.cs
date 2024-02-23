@@ -6,31 +6,33 @@ namespace ShopProject.Areas.Shopper.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Order
+    public partial class Producers
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Order()
+        public Producers()
         {
-            OrderDetails = new HashSet<OrderDetail>();
+            Products = new HashSet<Products>();
         }
 
-        [StringLength(20)]
-        public string orderID { get; set; }
+        [Key]
+        public int pdcID { get; set; }
+
+        [StringLength(100)]
+        public string pdcName { get; set; }
 
         [StringLength(20)]
-        public string cusPhone { get; set; }
-
-        public string orderMessage { get; set; }
+        public string pdcPhone { get; set; }
 
         [StringLength(50)]
-        public string orderDateTime { get; set; }
+        public string pdcEmail { get; set; }
 
-        [StringLength(50)]
-        public string orderStatus { get; set; }
+        public string pdcAddress { get; set; }
 
-        public virtual Customer Customer { get; set; }
+        public string pdcPhoto { get; set; }
+
+        public string pdcInfo { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<Products> Products { get; set; }
     }
 }

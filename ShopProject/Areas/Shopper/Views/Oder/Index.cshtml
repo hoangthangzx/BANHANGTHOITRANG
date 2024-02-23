@@ -1,0 +1,82 @@
+﻿@model IEnumerable<ShopProject.Areas.Shopper.Models.Orders>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Administrator/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Customers.cusFullName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShippingDetails.shippingAddress)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.orderMessage)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.orderDateTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.orderStatus)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.cusPhonegiao)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.cusEmailgiao)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.cusAddressgiao)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.cusFullNamegiao)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Customers.cusFullName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShippingDetails.shippingAddress)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.orderMessage)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.orderDateTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.orderStatus)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.cusPhonegiao)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.cusEmailgiao)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.cusAddressgiao)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.cusFullNamegiao)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.orderID }) |
+            @Html.ActionLink("Details", "Details", new { id=item.orderID }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.orderID })
+        </td>
+    </tr>
+}
+
+</table>

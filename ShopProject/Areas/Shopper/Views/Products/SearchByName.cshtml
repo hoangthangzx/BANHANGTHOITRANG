@@ -1,4 +1,4 @@
-﻿@model PagedList.IPagedList<ShopProject.Areas.Shopper.Models.Product>
+﻿@model PagedList.IPagedList<ShopProject.Areas.Shopper.Models.Products>
 @using PagedList.Mvc
 @{
     ViewBag.Title = "Trang chủ";
@@ -93,7 +93,7 @@
                                             }
                                         </div>
                                         <div>
-                                            <a href="#"><img src="@item.Producer.pdcPhoto" width="20" height="20" /> @item.Producer.pdcName</a>
+                                            <a href="#"><img src="@item.Producers.pdcPhoto" width="20" height="20" /> @item.Producers.pdcName</a>
                                         </div>
                                         <div class="clearfix"></div>
                                     </div>

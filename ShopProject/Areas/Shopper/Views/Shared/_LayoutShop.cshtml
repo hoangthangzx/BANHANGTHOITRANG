@@ -12,7 +12,7 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="~/Areas/Shopper/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    
+
     <!-- MetisMenu CSS -->
     <link href="~/Areas/Shopper/vendor/metisMenu/metisMenu.min.css" rel="stylesheet">
 
@@ -53,30 +53,20 @@
     <link rel="stylesheet" href="~/Areas/Shopper/Content/css/jstarbox.css" type="text/css" media="screen" charset="utf-8" />
     <!---//End-rate---->
     <style>
-        #style-6::-webkit-scrollbar-track
-            {
-	            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	            background-color: #F5F5F5;
-            }
+        #style-6::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+            background-color: #F5F5F5;
+        }
 
-            #style-6::-webkit-scrollbar
-            {
-	            width: 10px;
-	            background-color: #F5F5F5;
-            }
+        #style-6::-webkit-scrollbar {
+            width: 10px;
+            background-color: #F5F5F5;
+        }
 
-            #style-6::-webkit-scrollbar-thumb
-            {
-	            background-color: #F90;	
-	            background-image: -webkit-linear-gradient(45deg,
-	                                                      rgba(255, 255, 255, .2) 25%,
-											              transparent 25%,
-											              transparent 50%,
-											              rgba(255, 255, 255, .2) 50%,
-											              rgba(255, 255, 255, .2) 75%,
-											              transparent 75%,
-											              transparent)
-            }
+        #style-6::-webkit-scrollbar-thumb {
+            background-color: #F90;
+            background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, .2) 25%, transparent 25%, transparent 50%, rgba(255, 255, 255, .2) 50%, rgba(255, 255, 255, .2) 75%, transparent 75%, transparent)
+        }
     </style>
 </head>
 <body id="style-6">
@@ -87,13 +77,24 @@
             </div>
             <div class="head-t">
                 <ul class="card">
-                    <li><a href="http://localhost:61765/Admin/Account/Login"><i class="fa fa-user" aria-hidden="true"></i>Đăng nhập</a></li>
-                    <li><a href="register.html"><i class="fa fa-arrow-right" aria-hidden="true"></i>Đăng ký</a></li>
+                    @if (Session["cusPhone"] == null)
+                    {
+                        <li><a href="http://localhost:61765/Admin/Customer/Login"><i class="fa fa-user" aria-hidden="true"></i>Đăng nhập</a></li>
+                        <li><a href="register.html"><i class="fa fa-arrow-right" aria-hidden="true"></i>Đăng ký</a></li>
+                    }
+                    else
+                    {
+                        <li>CusPhone: @Session["cusPhone"].ToString()</li>
+                        <a href="@Url.Action("Logout", "Home", new { area = "Shopper" })">
+                            <i class="fa fa-sign-out fa-fw"></i> Đăng xuất
+                        </a>
+                    }
                 </ul>
+
             </div>
             <div class="header-ri">
                 <ul class="social-top">
-                    <li><a href="http://facebook.com/tung.tim.96" target="_blank" class="icon facebook"><i class="fa fa-facebook" aria-hidden="true"></i><span></span></a></li>
+                    <li><a href="" target="_blank" class="icon facebook"><i class="fa fa-facebook" aria-hidden="true"></i><span></span></a></li>
                     <li><a href="#" class="icon pinterest"><i class="fa fa-youtube-play" aria-hidden="true"></i><span></span></a></li>
                 </ul>
             </div>
@@ -150,24 +151,62 @@
                                 </ul>
                             </li>
                             <li><a href="#" class="hyper "><span>Phản hồi</span></a></li>
-                        </ul>
+                            @if (Session["cusPhone"] != null)
+                            {
+                                <li><a href="@Url.Action("Index", "Oder")" class="hyper "><span>Đơn Hàng</span></a></li>
+                            }
+                            </ul>
                     </div>
                 </nav>
                 <div class="cart">
                     @{
-                        List<ShopProject.Areas.Shopper.Models.CartItem> gio = Session["giohang"] as List<ShopProject.Areas.Shopper.Models.CartItem>;
-                        if (gio == null || gio.Count == 0)
+                        int gio = 0;
+                        if (Session["cusPhone"] != null)
                         {
-                            <a href="@Url.Action("Index","GioHang")"><span class="fa fa-shopping-cart my-cart-icon"><span class="badge badge-notify my-cart-badge">0</span></span></a>
+                            string cusPhone = Session["cusPhone"].ToString();
+                            // Tạo một đối tượng UserContext để truy vấn cơ sở dữ liệu
+                            using (var db1 = new ShopProject.Areas.Shopper.Models.UserContext())
+                            {
+                                // Kiểm tra xem cusPhone có trong ShoppingCartItems hay không
+                                bool isCusPhoneExists = db1.ShoppingCartItems.Any(item => item.cusPhone == cusPhone);
+
+                                // Nếu có, tính tổng số lượng sản phẩm trong giỏ hàng
+                                if (isCusPhoneExists)
+                                {
+                                    var items = db1.ShoppingCartItems.Where(item => item.cusPhone == cusPhone);
+                                    gio = items.Sum(item => item.quantity);
+                                }
+                            }
+                            // Lưu số lượng sản phẩm vào session
+                            Session["gio"] = gio;
                         }
                         else
                         {
-                            <a href="@Url.Action("Index","GioHang")"><span class="fa fa-shopping-cart my-cart-icon"><span class="badge badge-notify my-cart-badge">@gio.Count</span></span></a>
+                            // Nếu không có cusPhone trong session thì lấy giá trị từ session đã lưu
+                            if (Session["gio"] != null)
+                            {
+                                gio = (int)Session["gio"];
+                            }
                         }
-}
+                    }
+
+                    <a href="@Url.Action("Index", "GioHang")">
+                        <span class="fa fa-shopping-cart my-cart-icon">
+                            <span class="badge badge-notify my-cart-badge">@gio</span>
+                        </span>
+                    </a>
                 </div>
+
+
                 <div class="clearfix"></div>
             </div>
+
+            <div class="clearfix"></div>
+        </div>
+
+
+            <div class="clearfix"></div>
+        </div>
         </div>
     </div>
     @RenderBody()
@@ -194,7 +233,7 @@
             <div class="col-md-3 footer-grid">
                 <h3>Tài khoản</h3>
                 <ul>
-                    <li><a href="login.html">Đăng nhập</a></li>
+                    <li><a href="http://localhost:61765/Admin/Customer/Login"><i class="fa fa-user" aria-hidden="true"></i>Đăng nhập</a></li>
                     <li><a href="register.html">Đăng ký</a></li>
                 </ul>
             </div>
@@ -202,27 +241,27 @@
             <div class="footer-bottom">
                 <h2><a href="index.html"><b>T<br>H<br>E</b>Shopper<span>The Best Fashion</span></a></h2>
                 <ul class="social-fo">
-                    <li><a href="http://facebook.com/tung.tim.96" target="_blank" class=" face"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                    <li><a href="" target="_blank" class=" face"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
                     <li><a href="#" class=" twi"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
                     <li><a href="#" class=" pin"><i class="fa fa-pinterest-p" aria-hidden="true"></i></a></li>
                     <li><a href="#" class=" dri"><i class="fa fa-dribbble" aria-hidden="true"></i></a></li>
                 </ul>
                 <div class=" address">
                     <div class="col-md-4 fo-grid1">
-                        <p><i class="fa fa-home" aria-hidden="true"></i>80/10 Dĩ an, Bình Dương.</p>
+                        <p><i class="fa fa-home" aria-hidden="true"></i>Nga sơn, Thanh Hoa.</p>
                     </div>
                     <div class="col-md-4 fo-grid1">
                         <p><i class="fa fa-phone" aria-hidden="true"></i>01212692802</p>
                     </div>
                     <div class="col-md-4 fo-grid1">
-                        <p><a href="mailto:tungtim96@gmail.com"><i class="fa fa-envelope-o" aria-hidden="true"></i>tungtim96@gmail.com</a></p>
+                        <p><a href="mailto:tungtim96@gmail.com"><i class="fa fa-envelope-o" aria-hidden="true"></i>thang@gmail.com</a></p>
                     </div>
                     <div class="clearfix"></div>
 
                 </div>
             </div>
             <div class="copy-right">
-                <p> &copy; 2017 Shopper. All Rights Reserved | Design by  <a target="_blank" href="http://facebook.com/tung.tim.96"> Vũ Tùng</a></p>
+                <p> &copy; 2017 Shopper. All Rights Reserved | Design by  <a target="_blank" href=""> Hoang Thang</a></p>
             </div>
         </div>
     </div>

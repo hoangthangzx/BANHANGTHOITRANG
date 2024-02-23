@@ -6,8 +6,9 @@ namespace ShopProject.Areas.Shopper.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Comment
+    public partial class Comments
     {
+        [Key]
         public int commentID { get; set; }
 
         [StringLength(50)]
@@ -15,6 +16,6 @@ namespace ShopProject.Areas.Shopper.Models
 
         public string commentMessage { get; set; }
 
-        public virtual Product Product { get; set; }
+        public virtual Products Products { get; set; }
     }
 }

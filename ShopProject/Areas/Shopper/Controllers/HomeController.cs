@@ -13,5 +13,17 @@ namespace ShopProject.Areas.Shopper.Controllers
         {
             return View();
         }
+        public ActionResult View1()
+        {
+            return View();
+        }
+        public ActionResult Logout()
+        {
+            // Xóa tất cả các biến phiên (session)
+            Session.Clear();
+
+            // Chuyển hướng người dùng đến trang đăng nhập
+            return RedirectToAction("Index", "Home", new { area = "Shopper" });
+        }
     }
 }

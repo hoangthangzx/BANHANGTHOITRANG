@@ -6,7 +6,7 @@ namespace ShopProject.Areas.Shopper.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Rate
+    public partial class Rates
     {
         [Key]
         [StringLength(50)]
@@ -14,6 +14,6 @@ namespace ShopProject.Areas.Shopper.Models
 
         public int? rateStar { get; set; }
 
-        public virtual Product Product { get; set; }
+        public virtual Products Products { get; set; }
     }
 }

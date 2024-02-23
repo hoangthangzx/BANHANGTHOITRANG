@@ -6,13 +6,14 @@ namespace ShopProject.Areas.Shopper.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Product
+    public partial class Products
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Product()
+        public Products()
         {
-            Comments = new HashSet<Comment>();
-            OrderDetails = new HashSet<OrderDetail>();
+            Comments = new HashSet<Comments>();
+            OrderDetails = new HashSet<OrderDetails>();
+            ShoppingCartItems = new HashSet<ShoppingCartItems>();
         }
 
         [Key]
@@ -42,15 +43,18 @@ namespace ShopProject.Areas.Shopper.Models
         public string proDescription { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Comments> Comments { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderDetail> OrderDetails { get; set; }
+        public virtual ICollection<OrderDetails> OrderDetails { get; set; }
 
-        public virtual Producer Producer { get; set; }
+        public virtual Producers Producers { get; set; }
 
-        public virtual ProductType ProductType { get; set; }
+        public virtual ProductTypes ProductTypes { get; set; }
 
-        public virtual Rate Rate { get; set; }
+        public virtual Rates Rates { get; set; }
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ShoppingCartItems> ShoppingCartItems { get; set; }
     }
 }

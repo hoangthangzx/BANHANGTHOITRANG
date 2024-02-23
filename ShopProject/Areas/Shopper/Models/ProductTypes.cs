@@ -6,23 +6,25 @@ namespace ShopProject.Areas.Shopper.Models
     using System.ComponentModel.DataAnnotations.Schema;
     using System.Data.Entity.Spatial;
 
-    public partial class Category
+    public partial class ProductTypes
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Category()
+        public ProductTypes()
         {
-            ProductTypes = new HashSet<ProductType>();
+            Products = new HashSet<Products>();
         }
 
         [Key]
-        public int cateID { get; set; }
+        public int typeID { get; set; }
+
+        public int? cateID { get; set; }
 
         [StringLength(100)]
-        public string cateName { get; set; }
+        public string typeName { get; set; }
 
-        public string catePhoto { get; set; }
+        public virtual Categories Categories { get; set; }
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductType> ProductTypes { get; set; }
+        public virtual ICollection<Products> Products { get; set; }
     }
 }

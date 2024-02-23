@@ -2,87 +2,102 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace ShopProject.Areas.Shopper.Controllers
 {
     public class GioHangController : Controller
     {
-        UserContext db = new UserContext();
-        // GET: Shopper/GioHang
+        private UserContext db = new UserContext();
+
         public ActionResult Index()
         {
-            List<CartItem> giohang = Session["giohang"] as List<CartItem>;
-            return View(giohang);
+            // Khởi tạo đối tượng DbContext
+            ShopProject.Areas.Shopper.Models.UserContext db = new ShopProject.Areas.Shopper.Models.UserContext();
 
-        }
-        public ActionResult ThemVaoGio(string SanPhamID)
-        {
-            if (Session["giohang"] == null) // Nếu giỏ hàng chưa được khởi tạo
+            // Lấy giỏ hàng từ cơ sở dữ liệu
+            List<ShopProject.Areas.Shopper.Models.ShoppingCartItems> gio = new List<ShopProject.Areas.Shopper.Models.ShoppingCartItems>();
+
+            // Kiểm tra xem có cusPhone trong session không
+            if (Session["cusPhone"] != null)
             {
-                Session["giohang"] = new List<CartItem>();  // Khởi tạo Session["giohang"] là 1 List<CartItem>
+                string cusPhone = Session["cusPhone"].ToString();
+                // Lấy danh sách ShoppingCartItems dựa vào cusPhone
+                gio = db.ShoppingCartItems.Where(item => item.cusPhone == cusPhone).ToList();
             }
 
-            List<CartItem> giohang = Session["giohang"] as List<CartItem>;  // Gán qua biến giohang dễ code
+            return View(gio);
+        }
 
-            // Kiểm tra xem sản phẩm khách đang chọn đã có trong giỏ hàng chưa
 
-            if (giohang.FirstOrDefault(m => m.SanPhamID == SanPhamID) == null) // ko co sp nay trong gio hang
+        public ActionResult ThemVaoGio(string SanPhamID)
+        {
+            // Kiểm tra xem đã có người dùng đăng nhập chưa
+            if (Session["cusPhone"] == null)
             {
-                Models.Product sp = db.Products.Find(SanPhamID);  // tim sp theo sanPhamID
+                // Nếu chưa đăng nhập, chuyển hướng đến trang đăng nhập hoặc đăng ký
+                return RedirectToAction("Login", "Account"); // Thay "Login" và "Account" bằng tên controller và action tương ứng
+            }
 
-                CartItem newItem = new CartItem()
+            // Lấy mã khách hàng từ Session
+            string cusPhone = Session["cusPhone"].ToString();
+
+            // Kiểm tra sản phẩm đã tồn tại trong giỏ hàng của khách hàng chưa
+            var cartItem = db.ShoppingCartItems.FirstOrDefault(m => m.proID == SanPhamID && m.cusPhone == cusPhone);
+            if (cartItem == null)
+            {
+                // Nếu chưa tồn tại, thêm mới vào giỏ hàng
+                var product = db.Products.Find(SanPhamID);
+                if (product != null)
                 {
-                    SanPhamID = SanPhamID,
-                    TenSanPham = sp.proName,
-                    SoLuong = 1,
-                    Hinh = sp.proPhoto,
-                    DonGia = (Int32.Parse(sp.proPrice) - (Int32.Parse(sp.proPrice) * sp.proDiscount)/100).ToString()
-
-                };  // Tạo ra 1 CartItem mới
-
-                giohang.Add(newItem);  // Thêm CartItem vào giỏ 
+                    var newItem = new ShoppingCartItems
+                    {
+                        proID = SanPhamID,
+                        cusPhone = cusPhone,
+                        quantity = 1,
+                        price = (Int32.Parse(product.proPrice) - (Int32.Parse(product.proPrice) * product.proDiscount) / 100).ToString(),
+                        discount = product.proDiscount // Thêm thông tin giảm giá vào giỏ hàng
+                    };
+                    db.ShoppingCartItems.Add(newItem);
+                }
             }
             else
             {
-                // Nếu sản phẩm khách chọn đã có trong giỏ hàng thì không thêm vào giỏ nữa mà tăng số lượng lên.
-                CartItem cardItem = giohang.FirstOrDefault(m => m.SanPhamID == SanPhamID);
-                cardItem.SoLuong++;
+                // Nếu đã tồn tại, tăng số lượng lên 1
+                cartItem.quantity++;
             }
 
-            // Action này sẽ chuyển hướng về trang chi tiết sp khi khách hàng đặt vào giỏ thành công. Bạn có thể chuyển về chính trang khách hàng vừa đứng bằng lệnh return Redirect(Request.UrlReferrer.ToString()); nếu muốn.
-            return Redirect(Request.UrlReferrer.ToString());
+            db.SaveChanges();
+
+            return RedirectToAction("Index", "GioHang");
+
         }
-        //Sửa số lượng
+
+
         public ActionResult SuaSoLuong(string SanPhamID, int soluongmoi)
         {
-            // tìm carditem muon sua
-            List<CartItem> giohang = Session["giohang"] as List<CartItem>;
-            CartItem itemSua = giohang.FirstOrDefault(m => m.SanPhamID.Equals(SanPhamID));
-            if (itemSua != null)
+            // Tìm sản phẩm trong giỏ hàng
+            var cartItem = db.ShoppingCartItems.FirstOrDefault(m => m.proID.Equals(SanPhamID));
+            if (cartItem != null)
             {
-                if (soluongmoi < 1 || soluongmoi > 100)
+                // Kiểm tra số lượng mới hợp lệ
+                if (soluongmoi >= 1 && soluongmoi <= 100)
                 {
-
-                }
-                else
-                {
-                    @ViewBag.GioError = "";
-                    itemSua.SoLuong = soluongmoi;
+                    cartItem.quantity = soluongmoi;
+                    db.SaveChanges();
                 }
             }
             return RedirectToAction("Index");
-
         }
-        //Xoá khỏi giỏ
+
         public ActionResult XoaKhoiGio(string SanPhamID)
         {
-            List<CartItem> giohang = Session["giohang"] as List<CartItem>;
-            CartItem itemXoa = giohang.FirstOrDefault(m => m.SanPhamID.Equals(SanPhamID));
-            if (itemXoa != null)
+            // Tìm và xóa sản phẩm khỏi giỏ hàng
+            var cartItem = db.ShoppingCartItems.FirstOrDefault(m => m.proID.Equals(SanPhamID));
+            if (cartItem != null)
             {
-                giohang.Remove(itemXoa);
+                db.ShoppingCartItems.Remove(cartItem);
+                db.SaveChanges();
             }
             return RedirectToAction("Index");
         }
